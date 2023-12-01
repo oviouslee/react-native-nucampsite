@@ -19,6 +19,7 @@ import { fetchComments } from "../features/comments/commentsSlice";
 import { fetchPromotions } from "../features/promotions/promotionsSlice";
 import { fetchCampsites } from "../features/campsites/campsitesSlice";
 import { logo } from "../assets/images/logo.png";
+import ReservationScreen from "./ReservationScreen";
 
 const screenOptions = {
   headerTintColor: "#fff",
@@ -139,6 +140,29 @@ const DirectoryNavigator = () => {
   );
 };
 
+const ReservationNavigator = () => {
+  const Stack = createStackNavigator();
+  return (
+    <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen
+        name="Reservation"
+        component={ReservationScreen}
+        options={({ navigation }) => ({
+          title: "Reservation Search",
+          headerLeft: () => (
+            <Icon
+              name="tree"
+              type="font-awesome"
+              iconStyle={styles.stackIcon}
+              onPress={() => navigation.toggleDrawer()}
+            />
+          ),
+        })}
+      />
+    </Stack.Navigator>
+  );
+};
+
 const Main = () => {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -174,7 +198,7 @@ const Main = () => {
               />
             ),
           }}
-        ></Drawer.Screen>
+        />
         <Drawer.Screen
           name="Directory"
           component={DirectoryNavigator}
@@ -190,7 +214,7 @@ const Main = () => {
               />
             ),
           }}
-        ></Drawer.Screen>
+        />
         <Drawer.Screen
           name="About"
           component={AboutNavigator}
@@ -206,7 +230,7 @@ const Main = () => {
               />
             ),
           }}
-        ></Drawer.Screen>
+        />
         <Drawer.Screen
           name="Contact"
           component={ContactNavigator}
@@ -222,7 +246,23 @@ const Main = () => {
               />
             ),
           }}
-        ></Drawer.Screen>
+        />
+        <Drawer.Screen
+          name="ReserveCampsite"
+          component={ReservationNavigator}
+          options={{
+            title: "Reserve Campsite",
+            drawerIcon: ({ color }) => (
+              <Icon
+                name="tree"
+                type="font-awesome"
+                size={24}
+                iconStyle={{ width: 24 }}
+                color={color}
+              />
+            ),
+          }}
+        />
       </Drawer.Navigator>
     </View>
   );
