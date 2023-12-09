@@ -3,6 +3,7 @@ import { Avatar, Card, ListItem } from "react-native-elements";
 import { useSelector } from "react-redux";
 import { baseUrl } from "../shared/baseUrl";
 import Loading from "../components/LoadingComponent";
+import * as Animatable from "react-native-animatable";
 
 const AboutScreen = () => {
   const partners = useSelector((state) => state.partners);
@@ -40,12 +41,14 @@ const AboutScreen = () => {
   if (partners.errMess) {
     return (
       <ScrollView>
-        <Mission />
-        <Card>
-          <Card.Title>Community Partners</Card.Title>
-          <Card.Divider />
-          <Text>{partners.errMess}</Text>
-        </Card>
+        <Animatable.View animation="fadeInDown" duration={2000} delay={1000}>
+          <Mission />
+          <Card>
+            <Card.Title>Community Partners</Card.Title>
+            <Card.Divider />
+            <Text>{partners.errMess}</Text>
+          </Card>
+        </Animatable.View>
       </ScrollView>
     );
   }
@@ -56,15 +59,17 @@ const AboutScreen = () => {
       <Card>
         <Card.Title>Community Partners</Card.Title>
         <Card.Divider />
-        {partners.partnersArray.map((p) => (
-          <ListItem key={p.id}>
-            <Avatar source={{ uri: baseUrl + p.image }} rounded />
-            <ListItem.Content>
-              <ListItem.Title>{p.name}</ListItem.Title>
-              <ListItem.Subtitle>{p.description}</ListItem.Subtitle>
-            </ListItem.Content>
-          </ListItem>
-        ))}
+        <Animatable.View animation="fadeInDown" duration={2000} delay={1000}>
+          {partners.partnersArray.map((p) => (
+            <ListItem key={p.id}>
+              <Avatar source={{ uri: baseUrl + p.image }} rounded />
+              <ListItem.Content>
+                <ListItem.Title>{p.name}</ListItem.Title>
+                <ListItem.Subtitle>{p.description}</ListItem.Subtitle>
+              </ListItem.Content>
+            </ListItem>
+          ))}
+        </Animatable.View>
       </Card>
     </ScrollView>
   );

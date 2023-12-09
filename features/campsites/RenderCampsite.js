@@ -1,36 +1,80 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, PanResponder, Alert } from "react-native";
 import { Card, Icon } from "react-native-elements";
 import { baseUrl } from "../../shared/baseUrl";
+import * as Animatable from "react-native-animatable";
+import { useRef } from "react";
 
 const RenderCampsite = ({ campsite, isFavorite, markFavorite, showModal }) => {
+  const view = useRef();
+  const isLeftSwipe = ({ dx }) => dx < -200;
+  const panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onPanResponderGrant: (e, gestureState) => {
+      view.current
+        .rubberBand(1000)
+        .then((endState) =>
+          console.log(endState.finished ? "finished" : "canceled")
+        );
+    },
+    onPanResponderEnd: (e, gestureState) => {
+      if (isLeftSwipe(gestureState)) {
+        Alert.alert(
+          "Add Favorite",
+          "Are you sure you wish to add " + campsite.name + " to favorites?",
+          [
+            {
+              text: "Cancel",
+              style: "cancel",
+            },
+            {
+              text: "OK",
+              onPress: () =>
+                isFavorite
+                  ? console.log("Already set as a favorite")
+                  : markFavorite(),
+            },
+          ],
+          { cancelable: false }
+        );
+      }
+    },
+  });
   if (campsite) {
     return (
-      <Card containerStyle={{ padding: 0 }}>
-        <Card.Image source={{ uri: baseUrl + campsite.image }}>
-          <View style={{ justifyContent: "center", flex: 1 }}>
-            <Text style={styles.cardText}>{campsite.name}</Text>
+      <Animatable.View
+        animation="fadeInDownBig"
+        duration={2000}
+        delay={1000}
+        ref={view}
+        {...panResponder.panHandlers}
+      >
+        <Card containerStyle={{ padding: 0 }}>
+          <Card.Image source={{ uri: baseUrl + campsite.image }}>
+            <View style={{ justifyContent: "center", flex: 1 }}>
+              <Text style={styles.cardText}>{campsite.name}</Text>
+            </View>
+          </Card.Image>
+          <Text style={{ margin: 20 }}>{campsite.description}</Text>
+          <View style={styles.cardRow}>
+            <Icon
+              name={isFavorite ? "heart" : "heart-o"}
+              onPress={markFavorite}
+              type="font-awesome"
+              color="#f50"
+              raised
+              reverse
+            />
+            <Icon
+              name="pencil"
+              onPress={() => showModal()}
+              type="font-awesome"
+              color="#5637DD"
+              raised
+              reverse
+            />
           </View>
-        </Card.Image>
-        <Text style={{ margin: 20 }}>{campsite.description}</Text>
-        <View style={styles.cardRow}>
-          <Icon
-            name={isFavorite ? "heart" : "heart-o"}
-            onPress={markFavorite}
-            type="font-awesome"
-            color="#f50"
-            raised
-            reverse
-          />
-          <Icon
-            name="pencil"
-            onPress={() => showModal()}
-            type="font-awesome"
-            color="#5637DD"
-            raised
-            reverse
-          />
-        </View>
-      </Card>
+        </Card>
+      </Animatable.View>
     );
   }
 
