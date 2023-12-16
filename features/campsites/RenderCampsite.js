@@ -7,6 +7,7 @@ import { useRef } from "react";
 const RenderCampsite = ({ campsite, isFavorite, markFavorite, showModal }) => {
   const view = useRef();
   const isLeftSwipe = ({ dx }) => dx < -200;
+  const isRightSwipe = ({ dx }) => dx > 200;
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderGrant: (e, gestureState) => {
@@ -36,6 +37,8 @@ const RenderCampsite = ({ campsite, isFavorite, markFavorite, showModal }) => {
           ],
           { cancelable: false }
         );
+      } else if (isRightSwipe(gestureState)) {
+        showModal();
       }
     },
   });
